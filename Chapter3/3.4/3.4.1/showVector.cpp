@@ -1,6 +1,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
+// iterate and display
 void showVectorInt(std::vector<int> a) {
     std::cout << "The size is " << a.size() << std::endl;
     for (auto i = a.begin(); i != a.end(); i++) {

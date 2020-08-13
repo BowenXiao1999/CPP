@@ -1,7 +1,7 @@
 #include <iostream>
 
 // explict
-
+// reload operator
 class Sales_item {
     public:
     // 默认初始化
