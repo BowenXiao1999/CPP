@@ -16,3 +16,4 @@ int main(int argc, char const *argv[])
     std::cout << compare("aa", "ab") << std::endl;
     return 0;
 }
+

@@ -4,3 +4,4 @@
 # !*.hpp
 # !*.md
 bin/
+cmake-build-debug
