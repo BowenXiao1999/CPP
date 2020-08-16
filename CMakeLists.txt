@@ -2,3 +2,4 @@ add_executable(compare Chapter16/16.1/16.1.1/compare.cpp Chapter16/16.1/16.1.1/p
 add_executable(showVector Chapter3/3.4/3.4.1/showVector.cpp Chapter16/16.1/16.1.1/find.cpp)
 add_executable(find Chapter16/16.1/16.1.1/find.cpp)
 add_executable(print Chapter16/16.1/16.1.1/print.cpp)
+add_executable(shared_ptr Chapter12/12.1/12.1.1/shared_ptr.cpp)
