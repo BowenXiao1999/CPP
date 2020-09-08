@@ -5,100 +5,143 @@
 #include <iostream>
 using namespace std;
 
-// return value is a pair, represent the truncated slice in a and b
-pair<int, int> divide(vector<int> a, vector<int> b, int n) {
+// return value is a pair, represent the truncated slice index in a and b
+pair<int, int> divide(vector<int> &a, vector<int> &b, int &&n) {
     int l = 0;
-    int r = n;
-    while (l < r) {
+    int r = n; // OPTIMIZATION: Right bound is n instead of a.size()
+    while (l < r) { // binary search to find suitable target
         int mid = l + (r - l) / 2;
-        if (mid >= a.size()) {
-            r = mid;
-            continue;
-        }
-        // if the index already larger than n
-        if (mid + 1> n) {
+        int mmid = n - mid - 2;
+        if (mid >= a.size() || mid + 1 > n) {
             r = mid;
             continue;
         }
 
-        // if the index equal n
-        if (mid + 1 == n) {
-            return pair<int, int>(mid+1, 0);
+        if (mid + 1 == n) { // if find equal length slice
+            return pair<int, int>(mid + 1, 0);
         }
 
         // target value for b to search
         int targetB = a[mid];
 
-        // if not find the targetB in B because targetB is too large
+        // [OPTIMIZATION] BOUNDARY CASE: if targetB is larger than any ele in B
         if (targetB > b.back()) {
             r = mid;
             continue;
         } else if (targetB < b[0]) { // or too small
-            l = mid+1;
+            l = mid + 1;
             continue;
         }
-
-        // locate targetB in B via Binary Search
-        int ll = 0;
-        int rr = n;
-        bool isfound = false;
-        int backup = INT64_MIN;
-        while (ll < rr) {
-            int mmid = ll + (rr - ll) / 2;
-
-            if (b[mmid] < targetB) {
-                ll = mmid + 1;
-                if (b[mmid] - targetB > backup - targetB) backup = max(backup, mmid);
-//                continue;
-            } else if (b[mmid] > targetB) {
-                rr = mmid;
-//                continue;
-            } else {
-                isfound = true;
-                // find the value but still need duplicate detection
-                int premain = mmid;
-                while (premain < b.size() && premain >= 0) {
-                    // if it is added up to n
-                    if (premain + mid + 2 == n) {
-                        return pair<int, int>(mid+1, premain+1);
-                    } else {
-
-                        // otherwise adjust the bound
-                        if (premain + mid + 2 < n) {
-                            if (premain < b.size() - 1 && b[premain] != b[premain+1]) break;
-                            premain++;
-                        } else if (premain + mid + 2 > n) {
-                            if (premain > 0 && b[premain] != b[premain-1]) break;
-                            premain--;
-                        }
-                    }
-                }
-
-                if (premain + mid + 2 < n) {
-                    l = mid + 1;
-                } else if (premain + mid + 2 > n) {
-                    r = mid;
-                }
-                break;
-            }
-
-        }
-        // if we don't find any targetB in B, adjust the bound in A
-        if (!isfound){
-            // not find the back up
-            if (backup + mid + 2 < n){
-                l = mid + 1;
-            } else if (backup + mid + 2 > n){
+        if (mid < a.size() - 1 && mmid < b.size() - 1){
+            if (a[mid] <= b[mmid + 1] && b[mmid] <= a[mid+1]) {
+                return make_pair(mid+1, mmid+1);
+            }else if (a[mid] < b[mmid]) {
+                l = mid+1;
+            }else if (a[mid] > b[mmid+1])  {
                 r = mid;
-            }else {
-                return make_pair(mid+1, backup+1);
             }
         }
     }
+}
+
+    // return value is a pair, represent the truncated slice index in a and b
+//pair<int, int> divide(vector<int> &a, vector<int> &b, int &&n) {
+//    int l = 0;
+//    int r = n; // OPTIMIZATION: Right bound is n instead of a.size()
+//    while (l < r) { // binary search to find suitable target
+//        int mid = l + (r - l) / 2;
+//        if (mid >= a.size()) {
+//            r = mid;
+//            continue;
+//        }
+//
+//        if (mid + 1 > n) { // if slice larger than n already
+//            r = mid;
+//            continue;
+//        }
+//
+//
+//        if (mid + 1 == n) { // if find equal length slice
+//            return pair<int, int>(mid + 1, 0);
+//        }
+//
+//        // target value for b to search
+//        int targetB = a[mid];
+//
+//        // [OPTIMIZATION] BOUNDARY CASE: if targetB is larger than any ele in B
+//        if (targetB > b.back()) {
+//            r = mid;
+//            continue;
+//        } else if (targetB < b[0]) { // or too small
+//            l = mid + 1;
+//            continue;
+//        }
+//
+//        // locate targetB in B via Binary Search
+//        int ll = 0;
+//        int rr = n - mid - 2; // OPTIMIZATION: we only need to locate targetB in remain interval
+//        if (b[rr] == targetB) {
+//            return make_pair(mid + 1, rr + 1);
+//        } else if (b[n-mid] < targetB){
+//            r = mid;
+//        }else{
+//            l = mid+1;
+//        }
+//    }
+//        bool isfound = false; int backup = -1; // OPTIMIZATION: for backup case
+//        while (ll < rr) { // search begin
+//            int mmid = ll + (rr - ll) / 2;
+//
+//            if (b[mmid] < targetB) {
+//                ll = mmid + 1;
+//                if (backup == -1 || b[mmid] - targetB > b[backup] - targetB) backup = mmid; // find the cloest neighbour to targetB
+//            } else if (b[mmid] > targetB) {
+//                rr = mmid;
+//            } else {
+//                isfound = true; // find target
+//                int premain = mmid;
+//                while (premain < b.size() && premain >= 0) { // duplicate detection
+//                    if (premain + mid + 2 == n) { // if it is added up to n
+//                        return pair<int, int>(mid+1, premain+1);
+//                    } else {
+//
+//                        // otherwise adjust the bound
+//                        if (premain + mid + 2 < n) {
+//                            if (premain < b.size() - 1 && b[premain] != b[premain+1]) break;
+//                            premain++; // iter right to check
+//                        } else if (premain + mid + 2 > n) {
+//                            if (premain > 0 && b[premain] != b[premain-1]) break;
+//                            premain--; // iter left to check
+//                        }
+//                    }
+//                }
+//
+//                // still not satisfy the n number
+//                if (premain + mid + 2 < n) {
+//                    l = mid + 1;
+//                } else if (premain + mid + 2 > n) {
+//                    r = mid;
+//                }
+//                break;
+//            }
+//
+//        }
+//
+//        // if we don't find any targetB in B, adjust the bound in A by backup
+//        if (!isfound){
+//            if (backup + mid + 2 < n){
+//                l = mid + 1;
+//            } else if (backup + mid + 2 > n){
+//                r = mid;
+//            }else {
+//                return make_pair(mid+1, backup+1);
+//            }
+//        }
+//    }
 
     // if we did not find qualify result
-    return make_pair(-1, -1);
-}
+//    return make_pair(-1, -1);
+//}
 
 int main() {
 
