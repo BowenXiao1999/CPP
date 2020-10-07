@@ -72,39 +72,3 @@ push(next);
 return
 dummy;
 }
-
-class Heap {
-    vector<Node *> stk;
-
-    void push(Node *n) {
-        stk.push(n);
-        int idx = stk.size() - 1;
-        Node * replace = n;
-        while (idx > 0) {
-            int parent = (idx - 1) / 2;
-
-            if (stk[parent].val > stk[idx].val) {
-                stk[idx] = stk[parent];
-                idx = parent;
-            } else {
-                break;
-            }
-        }
-
-        stk[idx] = replace;
-
-
-    }
-
-    Node *min() {
-        return stk[0];
-    }
-
-    Node* delete(
-    int index
-    ){
-
-    }
-
-
-}

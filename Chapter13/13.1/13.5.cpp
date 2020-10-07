@@ -21,7 +21,7 @@ public:
 // copy construct
 HasPtr::HasPtr(const HasPtr &orig) {
     cout << "copy construct\n";
-    ps = new string (*orig.ps);
+    ps = new string (*orig.ps); // 拷贝对象，而不是拷贝指针本身
     i = orig.i;
 
 }
