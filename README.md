@@ -1,7 +1,5 @@
-# CPP_Primer
+# CPP
 
-Partial solution for C++ Primer 5. 
+Recordings of my C++ learning path.
 
-* Chapter3: iterator
-* Chapter7: class
-* Chapter16: template
+Includes partial solutions for C++ Primer 5, Modern C++.
