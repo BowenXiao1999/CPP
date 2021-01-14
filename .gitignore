@@ -5,3 +5,4 @@
 # !*.md
 bin/
 cmake-build-debug
+.idea
