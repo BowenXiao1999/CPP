@@ -8,3 +8,4 @@
 #add_executable(structured.binding Modern_CPP/chapter2/structured.binding.cpp)
 #add_executable(combined_struct Modern_CPP/chapter2/combined_struct.cpp)
 add_executable(enhance random/MoveSemantics/enhance.cpp)
+add_executable(special CPP_Primer/Chapter16/16.5/specialization.cpp)
